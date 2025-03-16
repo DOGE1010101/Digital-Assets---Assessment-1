@@ -1,0 +1,161 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		//Game Menu
+		Console.ForegroundColor = ConsoleColor.DarkCyan;
+			Console.WriteLine("{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}");
+			Console.WriteLine("{}   #                                      		 #####                              {}");
+			Console.WriteLine("{}  # #   #####   ####    ##   #####  ######		#     # ##### #    # #####  #  #### {}");
+			Console.WriteLine("{} #   #  #    # #    #  #  #  #    # #     		#         #   #    # #    # # #    #{}");
+			Console.WriteLine("{}#     # #    # #      #    # #    # ##### 		 #####    #   #    # #    # # #    #{}");
+			Console.WriteLine("{}####### #####  #      ###### #    # #     		      #   #   #    # #    # # #    #{}");
+			Console.WriteLine("{}#     # #   #  #    # #    # #    # #     		#     #   #   #    # #    # # #    #{}");
+			Console.WriteLine("{}#     # #    #  ####  #    # #####  ######		 #####    #    ####  #####  #  #### {}");
+			Console.WriteLine("{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}");
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine("                                 Press Start to Begin (Start)");
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine("                                        End Game (End)");
+			string transfer;
+		transfer = Console.ReadLine();
+
+			if (transfer == ("Start") || transfer == ("start"))
+			{	
+				Console.WriteLine("Starting Download");
+					Console.WriteLine("Console's Loading . . .");
+					Console.WriteLine();
+					Console.WriteLine("What would you like to play?");
+					Console.WriteLine();
+				while (true)
+				{
+					Console.WriteLine("Choose a game to play:");
+					Console.WriteLine("Tic-Tac-Toe (TTT)");
+					Console.WriteLine("Rock-Paper-Scissors (RPS)");
+					Console.WriteLine("Exit (Exit)");
+					Console.Write("Enter your choice: ");
+
+					string choice = Console.ReadLine();
+
+					switch (choice)
+					{
+						case "TTT" or "ttt":
+							PlayTicTacToe();
+							break;
+						case "RPS" or "rps":
+							PlayRockPaperScissors();
+							break;
+						case "Exit" or "exit" or "EXIT":
+							return;
+						default:
+							Console.WriteLine("Invalid choice. Try again.\n");
+							break;
+					}
+				}
+			}
+
+			static void PlayTicTacToe()
+			{
+				char[,] board = { { '1', '2', '3' }, { '4', '5', '6' }, { '7', '8', '9' } };
+				int player = 1;
+				int moves = 0;
+				bool gameWon = false;
+
+				while (!gameWon && moves < 9)
+				{
+					PrintBoard(board);
+					Console.WriteLine($"Player {player}'s turn. Enter a position: ");
+					string input = Console.ReadLine();
+
+					if (!int.TryParse(input, out int position) || position < 1 || position > 9)
+					{
+						Console.WriteLine("Invalid input. Try again.\n");
+						continue;
+					}
+
+					int row = (position - 1) / 3;
+					int col = (position - 1) % 3;
+
+					if (board[row, col] == 'X' || board[row, col] == 'O')
+					{
+						Console.WriteLine("Position already taken. Try again.\n");
+						continue;
+					}
+
+					board[row, col] = player == 1 ? 'X' : 'O';
+					gameWon = CheckWin(board);
+					player = 3 - player;
+					moves++;
+				}
+
+				PrintBoard(board);
+				Console.WriteLine(gameWon ? $"Player {3 - player} wins!\n" : "It's a draw!\n");
+			}
+
+			static void PrintBoard(char[,] board)
+			{
+				Console.WriteLine("_____________");
+				Console.WriteLine("\n| {0} | {1} | {2} |", board[0, 0], board[0, 1], board[0, 2]);
+				Console.WriteLine("----+---+----");
+				Console.WriteLine("| {0} | {1} | {2} |", board[1, 0], board[1, 1], board[1, 2]);
+				Console.WriteLine("----+---+----");
+				Console.WriteLine("| {0} | {1} | {2} |", board[2, 0], board[2, 1], board[2, 2]);
+				Console.WriteLine("_____________\n");
+			}
+
+			static bool CheckWin(char[,] board)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if ((board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2]) || 
+						(board[0, i] == board[1, i] && board[1, i] == board[2, i]))
+						return true;
+				}
+				return (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2]) || 
+					   (board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0]);
+			}
+
+			static void PlayRockPaperScissors()
+			{
+				int playerScore = 0, computerScore = 0, draws = 0;
+				string[] choices = { "Rock", "Paper", "Scissors" };
+				Random rand = new Random();
+
+				Console.WriteLine("Rock-Paper-Scissors!");
+				Console.Write("Choose Rock, Paper, or Scissors: ");
+				string playerChoice = Console.ReadLine()?.Trim().ToLower();
+
+				if (playerChoice != "rock" && playerChoice != "paper" && playerChoice != "scissors")
+				{
+					Console.WriteLine("Invalid choice. Try again.\n");
+					return;
+				}
+
+				string computerChoice = choices[rand.Next(3)];
+				Console.WriteLine($"Computer chose: {computerChoice}");
+
+				if (playerChoice == computerChoice.ToLower())
+				{
+					Console.WriteLine("It's a tie!\n");
+					draws++;
+				}
+				else if ((playerChoice == "rock" && computerChoice == "Scissors") ||
+						 (playerChoice == "paper" && computerChoice == "Rock") ||
+						 (playerChoice == "scissors" && computerChoice == "Paper"))
+				{
+					Console.WriteLine("You win!\n");
+					playerScore++;
+				}
+				else
+				{
+					Console.WriteLine("Computer wins!\n");
+					computerScore++;
+        		}
+				Console.WriteLine($"Scores - Player: {playerScore}, Computer: {computerScore}, Draws: {draws}");
+			}
+		}
+	}
